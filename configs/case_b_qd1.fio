@@ -1,0 +1,22 @@
+; CS559 System Design - FIO Benchmark Configuration
+; Workload: Case_B (Read_Heavy_OLTP_Transactional)
+; Queue Depth: 1
+; Purpose: PostgreSQL OLTP read-heavy transaction mix (70% read / 30% write)
+
+[global]
+ioengine=libaio
+direct=1
+size=1g
+runtime=20
+time_based=1
+ramp_time=3
+group_reporting=1
+filename=/root/fio-lab/db-test.bin
+percentile_list=50:95:99
+
+[Case_B_qd1]
+rw=randrw
+bs=4k
+rwmixread=70
+iodepth=1
+numjobs=1

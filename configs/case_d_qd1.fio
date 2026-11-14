@@ -1,0 +1,21 @@
+; CS559 System Design - FIO Benchmark Configuration
+; Workload: Case_D (Sequential_Table_Scan_Analytics)
+; Queue Depth: 1
+; Purpose: PostgreSQL sequential scan, analytical aggregation, VACUUM, pg_dump
+
+[global]
+ioengine=libaio
+direct=1
+size=1g
+runtime=20
+time_based=1
+ramp_time=3
+group_reporting=1
+filename=/root/fio-lab/db-test.bin
+percentile_list=50:95:99
+
+[Case_D_qd1]
+rw=read
+bs=256k
+iodepth=1
+numjobs=1

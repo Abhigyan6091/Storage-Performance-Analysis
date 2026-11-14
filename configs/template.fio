@@ -1,0 +1,20 @@
+; CS559 System Design - Master FIO Template
+; Flexible I/O Tester (FIO) Global Template for Storage Performance Benchmarking
+
+[global]
+ioengine=libaio
+direct=1
+size=1g
+runtime=20
+time_based=1
+ramp_time=3
+group_reporting=1
+filename=/root/fio-lab/db-test.bin
+percentile_list=50:95:99
+numjobs=1
+
+; Example job definition:
+; [example-job]
+; rw=randread
+; bs=4k
+; iodepth=8

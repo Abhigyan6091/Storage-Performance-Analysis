@@ -1,0 +1,34 @@
+; CS559 System Design - Case_C Full Suite
+; Workload: Write_Heavy_Checkpoint_Batch
+; Access pattern: rw=randrw, bs=8k, rwmixread=30%
+
+[global]
+ioengine=libaio
+direct=1
+size=1g
+runtime=20
+time_based=1
+ramp_time=3
+group_reporting=1
+filename=/root/fio-lab/db-test.bin
+percentile_list=50:95:99
+numjobs=1
+
+[Case_C_qd1]
+rw=randrw
+bs=8k
+rwmixread=30
+iodepth=1
+
+[Case_C_qd8]
+rw=randrw
+bs=8k
+rwmixread=30
+iodepth=8
+
+[Case_C_qd32]
+rw=randrw
+bs=8k
+rwmixread=30
+iodepth=32
+

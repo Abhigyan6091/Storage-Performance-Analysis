@@ -1,0 +1,31 @@
+; CS559 System Design - Case_D Full Suite
+; Workload: Sequential_Table_Scan_Analytics
+; Access pattern: rw=read, bs=256k, rwmixread=100%
+
+[global]
+ioengine=libaio
+direct=1
+size=1g
+runtime=20
+time_based=1
+ramp_time=3
+group_reporting=1
+filename=/root/fio-lab/db-test.bin
+percentile_list=50:95:99
+numjobs=1
+
+[Case_D_qd1]
+rw=read
+bs=256k
+iodepth=1
+
+[Case_D_qd8]
+rw=read
+bs=256k
+iodepth=8
+
+[Case_D_qd32]
+rw=read
+bs=256k
+iodepth=32
+
