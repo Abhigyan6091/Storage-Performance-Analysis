@@ -60,11 +60,11 @@ class NumberedCanvas(canvas.Canvas):
         # Running Footer (all pages)
         self.setStrokeColor(colors.HexColor("#D0D7DE"))
         self.setLineWidth(0.6)
-        self.line(45, 38, 8.5 * inch - 45, 38)
+        self.line(45, 36, 8.5 * inch - 45, 36)
         
-        self.drawString(45, 26, "CS559 System Design — Hands-on Storage Benchmarking Report")
+        self.drawString(45, 25, "CS559 System Design — Abhigyan Sharma (ID: 12340050) — Storage Performance Report")
         page_text = f"Page {self._pageNumber} of {page_count}"
-        self.drawRightString(8.5 * inch - 45, 26, page_text)
+        self.drawRightString(8.5 * inch - 45, 25, page_text)
         self.restoreState()
 
 def build_pdf():
@@ -80,8 +80,8 @@ def build_pdf():
         pagesize=letter,
         leftMargin=45,
         rightMargin=45,
-        topMargin=44,
-        bottomMargin=44
+        topMargin=42,
+        bottomMargin=42
     )
 
     styles = getSampleStyleSheet()
@@ -101,28 +101,28 @@ def build_pdf():
         fontSize=18,
         leading=22,
         textColor=c_primary,
-        spaceAfter=3
+        spaceAfter=2
     )
     
     subtitle_style = ParagraphStyle(
         'DocSubtitle',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=10.5,
-        leading=14,
+        fontSize=10,
+        leading=13,
         textColor=c_secondary,
-        spaceAfter=10
+        spaceAfter=8
     )
 
     h1_style = ParagraphStyle(
         'Heading1_Custom',
         parent=styles['Heading1'],
         fontName='Helvetica-Bold',
-        fontSize=12,
-        leading=15,
+        fontSize=11.5,
+        leading=14.5,
         textColor=c_primary,
-        spaceBefore=10,
-        spaceAfter=5,
+        spaceBefore=9,
+        spaceAfter=4,
         keepWithNext=True
     )
 
@@ -130,10 +130,10 @@ def build_pdf():
         'Heading2_Custom',
         parent=styles['Heading2'],
         fontName='Helvetica-Bold',
-        fontSize=10,
-        leading=13,
+        fontSize=9.8,
+        leading=12.5,
         textColor=c_secondary,
-        spaceBefore=7,
+        spaceBefore=6,
         spaceAfter=3,
         keepWithNext=True
     )
@@ -142,18 +142,18 @@ def build_pdf():
         'Body_Custom',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=8.5,
-        leading=11.6,
+        fontSize=8.4,
+        leading=11.4,
         textColor=c_dark,
-        spaceAfter=5
+        spaceAfter=4.5
     )
 
     table_header_style = ParagraphStyle(
         'TableHeader',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=7.8,
-        leading=9.5,
+        fontSize=7.6,
+        leading=9.2,
         textColor=colors.white,
         alignment=1
     )
@@ -162,8 +162,8 @@ def build_pdf():
         'TableCell',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=7.5,
-        leading=9.2,
+        fontSize=7.3,
+        leading=9.0,
         textColor=c_dark,
         alignment=1
     )
@@ -178,11 +178,11 @@ def build_pdf():
         'CaptionStyle',
         parent=styles['Normal'],
         fontName='Helvetica-Oblique',
-        fontSize=7.8,
-        leading=10,
+        fontSize=7.6,
+        leading=9.8,
         textColor=colors.HexColor("#555555"),
         alignment=1,
-        spaceAfter=6
+        spaceAfter=5
     )
 
     story = []
@@ -191,19 +191,23 @@ def build_pdf():
     story.append(Paragraph("Measuring Storage Performance with FIO", title_style))
     story.append(Paragraph("From Database Access Patterns to Reproducible I/O Experiments | CS559 System Design", subtitle_style))
     
-    # Metadata Box
+    # Enhanced Metadata Box with Name, Student ID, GitHub Repository, and System Specs
     meta_data = [
         [
             Paragraph("<b>Author / Student:</b> Abhigyan Sharma", body_style),
-            Paragraph("<b>Target Database:</b> PostgreSQL 16 (Relational OLTP / Analytics)", body_style)
+            Paragraph("<b>Student ID:</b> 12340050", body_style)
         ],
         [
             Paragraph("<b>Course:</b> CS559 System Design", body_style),
+            Paragraph("<b>Target Database:</b> PostgreSQL 16.3 (OLTP & Analytics)", body_style)
+        ],
+        [
+            Paragraph("<b>GitHub Repository:</b> <a href='https://github.com/Abhigyan6091/Storage-Performance-Analysis'><font color='#1B365D'><u>github.com/Abhigyan6091/Storage-Performance-Analysis</u></font></a>", body_style),
             Paragraph("<b>Benchmark Harness:</b> Flexible I/O Tester (FIO v3.41, libaio, direct=1)", body_style)
         ],
         [
-            Paragraph("<b>Operating Environment:</b> Ubuntu 24.04 LTS (WSL2 / Linux Kernel 6.6.87)", body_style),
-            Paragraph("<b>Host Hardware:</b> 13th Gen Intel Core i7-13620H (16 vCPUs, NVMe SSD)", body_style)
+            Paragraph("<b>Host Hardware:</b> 13th Gen Intel Core i7-13620H (16 vCPUs, NVMe SSD)", body_style),
+            Paragraph("<b>Operating Subsystem:</b> Ubuntu 24.04 LTS (WSL2 / Linux Kernel 6.6.87)", body_style)
         ]
     ]
     meta_table = Table(meta_data, colWidths=[260, 260])
@@ -211,13 +215,13 @@ def build_pdf():
         ('BACKGROUND', (0,0), (-1,-1), c_bg_light),
         ('BOX', (0,0), (-1,-1), 1, c_border),
         ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor("#E1E4E8")),
-        ('TOPPADDING', (0,0), (-1,-1), 3),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+        ('TOPPADDING', (0,0), (-1,-1), 2.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
         ('LEFTPADDING', (0,0), (-1,-1), 6),
         ('RIGHTPADDING', (0,0), (-1,-1), 6),
     ]))
     story.append(meta_table)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
     # Section 1: Executive Summary & Database Workload Modeling
     story.append(Paragraph("1. Executive Summary & Target Database Selection", h1_style))
@@ -284,14 +288,14 @@ def build_pdf():
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         ('GRID', (0,0), (-1,-1), 0.5, c_border),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, c_bg_light]),
-        ('TOPPADDING', (0,0), (-1,-1), 3),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
+        ('TOPPADDING', (0,0), (-1,-1), 2.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
         ('LEFTPADDING', (0,0), (-1,-1), 4),
         ('RIGHTPADDING', (0,0), (-1,-1), 4),
     ]))
     story.append(t1_table)
     story.append(Paragraph("Table 1: Mapping of Synthetic FIO Test Profiles to PostgreSQL 16 Storage Subsystems.", caption_style))
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
     # Section 2: Experimental Methodology & Fairness
     story.append(Paragraph("2. Experimental Methodology & Rigorous Test Controls", h1_style))
@@ -314,7 +318,7 @@ def build_pdf():
         "standard deviation (±1 SD), establishing confidence in repeatability.",
         body_style
     ))
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
     # Section 3: Empirical Benchmark Results
     story.append(Paragraph("3. Empirical Benchmark Results & Measured Statistics", h1_style))
@@ -367,14 +371,14 @@ def build_pdf():
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         ('GRID', (0,0), (-1,-1), 0.5, c_border),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, c_bg_light]),
-        ('TOPPADDING', (0,0), (-1,-1), 2.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
+        ('TOPPADDING', (0,0), (-1,-1), 2.2),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 2.2),
         ('LEFTPADDING', (0,0), (-1,-1), 2),
         ('RIGHTPADDING', (0,0), (-1,-1), 2),
     ]))
     story.append(t2_table)
     story.append(Paragraph("Table 2: Consolidated FIO Storage Benchmark Experimental Data Across 36 Runs (3 Repetitions per Configuration).", caption_style))
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
     # Page Break for Visual Analysis Section
     story.append(PageBreak())
@@ -559,12 +563,12 @@ def build_pdf():
         "or POSIX asynchronous pre-fetching to stream data at multi-gigabyte speeds without CPU bottlenecking.",
         body_style
     ))
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
     story.append(Paragraph("7. Artifact Index & Reproducibility Manifest", h1_style))
     story.append(Paragraph(
         "To satisfy the 10% reproducibility requirement of the CS559 grading rubric, all configuration files, execution scripts, raw JSON outputs, "
-        "and plotting code have been cataloged in the project repository:",
+        "and plotting code have been cataloged in the project repository at <a href='https://github.com/Abhigyan6091/Storage-Performance-Analysis'><font color='#1B365D'><u>https://github.com/Abhigyan6091/Storage-Performance-Analysis</u></font></a>:",
         body_style
     ))
 
@@ -586,24 +590,24 @@ def build_pdf():
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         ('GRID', (0,0), (-1,-1), 0.5, c_border),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, c_bg_light]),
-        ('TOPPADDING', (0,0), (-1,-1), 2.5),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
+        ('TOPPADDING', (0,0), (-1,-1), 2.2),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 2.2),
         ('LEFTPADDING', (0,0), (-1,-1), 4),
         ('RIGHTPADDING', (0,0), (-1,-1), 4),
     ]))
     story.append(art_table)
     story.append(Paragraph("Table 3: Deliverable Artifact Directory and Replication Manifest.", caption_style))
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 6))
 
-    # Concluding signature box
+    # Concluding signature box with Author Name, Student ID, and GitHub Link
     sign_data = [
         [
-            Paragraph("<b>Benchmark Harness:</b> fio-3.41 (Linux x86_64 / libaio)", body_style),
-            Paragraph("<b>Status:</b> All 36 Experimental Runs Verified", body_style)
+            Paragraph("<b>Author / Student:</b> Abhigyan Sharma (ID: 12340050)", body_style),
+            Paragraph("<b>Benchmark Harness:</b> fio-3.41 (Linux x86_64 / libaio)", body_style)
         ],
         [
-            Paragraph("<b>Report Generated:</b> November 2026", body_style),
-            Paragraph("<b>Verification Checksum:</b> SHA-256 Validated Raw JSONs", body_style)
+            Paragraph("<b>Repository:</b> <a href='https://github.com/Abhigyan6091/Storage-Performance-Analysis'><font color='#1B365D'><u>github.com/Abhigyan6091/Storage-Performance-Analysis</u></font></a>", body_style),
+            Paragraph("<b>Status:</b> All 36 Experimental Runs Verified & Audited", body_style)
         ]
     ]
     sign_table = Table(sign_data, colWidths=[255, 255])

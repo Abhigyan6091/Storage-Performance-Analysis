@@ -1,10 +1,12 @@
 # CS559 System Design: Measuring Storage Performance with FIO
 ### From Database Access Patterns to Reproducible I/O Experiments
 
-**Author:** Abhigyan Sharma  
-**Course:** CS559 System Design  
-**Target Database Archetype:** PostgreSQL 16 (Relational OLTP / Mixed Analytics)  
-**Deliverables:** Research Report (PDF), FIO Job Files (`.fio`), Raw JSON Outputs, Processed CSVs, Publication Figures, Python Automation Suite.
+* **Author / Student:** Abhigyan Sharma  
+* **Student ID:** 12340050  
+* **Course:** CS559 System Design  
+* **GitHub Repository:** [https://github.com/Abhigyan6091/Storage-Performance-Analysis](https://github.com/Abhigyan6091/Storage-Performance-Analysis)  
+* **Target Database Archetype:** PostgreSQL 16.3 (Relational OLTP / Mixed Analytics)  
+* **Deliverables:** Research Report (PDF), FIO Job Files (`.fio`), Raw JSON Outputs, Processed CSVs, Publication Figures, Python Automation Suite.
 
 ---
 
@@ -56,11 +58,32 @@ All benchmarks were executed on an isolated, pre-allocated file target under str
 
 ---
 
-## 4. Repository Structure
+## 4. Empirical Benchmark Results Summary
+
+Across 36 independent benchmark runs (3 repetitions per configuration, Mean ± Standard Deviation):
+
+| Case | Pattern | Block Size | Read Mix | QD | Throughput (IOPS) | Bandwidth (MiB/s) | Avg Latency (μs) | P50 (μs) | P95 (μs) | P99 Tail (μs) |
+| :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Case A** | `randread` | 4 KiB | 100% R | 1 | 15,802 ± 48 | 61.7 ± 0.2 | 62.4 | 53.5 | 87.6 | 137.0 |
+| **Case A** | `randread` | 4 KiB | 100% R | 8 | 107,322 ± 1,280 | 419.2 ± 5.0 | 74.2 | 66.8 | 114.2 | 162.8 |
+| **Case A** | `randread` | 4 KiB | 100% R | 32 | **268,380 ± 9,510** | 1,048.4 ± 37.1 | 119.1 | 107.0 | 179.2 | 256.7 |
+| **Case B** | `randrw` | 4 KiB | 70R/30W | 1 | 11,252 ± 140 | 44.0 ± 0.5 | 88.0 | 71.9 | 148.5 | 212.7 |
+| **Case B** | `randrw` | 4 KiB | 70R/30W | 8 | 56,216 ± 756 | 219.6 ± 3.0 | 141.9 | 119.3 | 224.3 | 294.2 |
+| **Case B** | `randrw` | 4 KiB | 70R/30W | 32 | **77,133 ± 9,838** | 301.3 ± 38.4 | 418.8 | 362.5 | 520.2 | 591.2 |
+| **Case C** | `randrw` | 8 KiB | 30R/70W | 1 | 9,623 ± 194 | 75.2 ± 1.5 | 103.0 | 83.5 | 175.1 | 247.5 |
+| **Case C** | `randrw` | 8 KiB | 30R/70W | 8 | 49,479 ± 57 | 386.6 ± 0.4 | 161.2 | 133.6 | 255.0 | 344.7 |
+| **Case C** | `randrw` | 8 KiB | 30R/70W | 32 | **52,095 ± 2,447** | 407.0 ± 19.1 | 614.6 | 518.1 | 823.3 | **1,383.1** |
+| **Case D** | `read` (seq) | 256 KiB | 100% R | 1 | 1,891 ± 454 | 472.6 ± 113.4 | 549.5 | 452.6 | 864.3 | 925.7 |
+| **Case D** | `read` (seq) | 256 KiB | 100% R | 8 | 12,396 ± 137 | 3,099.0 ± 34.3 | 644.5 | 577.5 | 864.3 | 974.8 |
+| **Case D** | `read` (seq) | 256 KiB | 100% R | 32 | 13,808 ± 129 | **3,452.5 ± 32.1** | 2,316.4 | 2,211.8 | 2,834.4 | **3,205.8** |
+
+---
+
+## 5. Repository Structure
 
 ```text
 FIO/
-├── CS559_Storage_Performance_Report.pdf  # Comprehensive 5-6 Page Academic Report
+├── CS559_Storage_Performance_Report.pdf  # Comprehensive 6-Page Academic Research Report
 ├── README.md                             # Reproducibility manual & technical specifications
 ├── configs/                              # 12 Individual + 4 consolidated .fio job files
 │   ├── template.fio                      # Global template
@@ -89,7 +112,7 @@ FIO/
 
 ---
 
-## 5. Step-by-Step Reproduction Instructions
+## 6. Step-by-Step Reproduction Instructions
 
 ### Step 1: Install WSL2 and Ubuntu
 In PowerShell (Administrator):
@@ -130,10 +153,9 @@ wsl -d Ubuntu -u root -- fio /mnt/c/Users/Abhigyan\ Sharma/OneDrive/Desktop/FIO/
 
 ---
 
-## 6. Key Empirical Findings & Summary
+## 7. Key Empirical Findings & Summary
 
-1. **Random vs. Sequential Disparity:** At QD=32, Case A (4 KiB random read) achieves ~34,000 IOPS but only ~133 MiB/s, while Case D (256 KiB sequential read) reaches ~1,300 MiB/s at ~5,200 IOPS. Sequential streaming achieves a ~10x bandwidth advantage by exploiting multi-channel flash parallelism and DMA transfers.
-2. **Diminishing Returns & The Saturation Knee:** Moving from QD=1 to QD=8 doubles IOPS across all workloads with negligible latency impact. However, increasing from QD=8 to QD=32 increases IOPS by only ~8% while latency inflates by 3.85x. Systems architects should cap concurrency at QD=8 to QD=16.
-3. **Write Penalty on Flash:** High write intensity (Case C, 70% write) reduces IOPS by ~35% and introduces severe P99 tail latency spikes (~3.85 ms) due to flash block erase cycles, garbage collection, and flush barriers.
-4. **Tail Latency vs. Average:** Average latency conceals severe outlier delays. While average latency at QD=32 was ~900 μs, P99 tail latency reached nearly 4,000 μs. Interactive database systems must be sized based on P99 SLA limits, not averages.
-
+1. **Random vs. Sequential Disparity:** At QD=32, Case A (4 KiB random read) achieves ~268k IOPS but ~1,048 MiB/s, while Case D (256 KiB sequential read) reaches ~3,452 MiB/s at ~13.8k IOPS. Sequential streaming achieves a ~3.3x bandwidth advantage by exploiting multi-channel flash parallelism and DMA transfers.
+2. **Diminishing Returns & The Saturation Knee:** Moving from QD=1 to QD=8 scales IOPS across all workloads with minimal latency impact. However, increasing from QD=8 to QD=32 in write-heavy workloads increases IOPS by only ~5.3% while latency inflates by 3.81x. Systems architects should cap concurrency at QD=8 to QD=16.
+3. **Write Penalty on Flash:** High write intensity (Case C, 70% write) reduces peak throughput to ~52k IOPS and introduces severe P99 tail latency spikes (~1.38 ms) due to flash block erase cycles, garbage collection, and flush barriers.
+4. **Tail Latency vs. Average:** Average latency conceals severe outlier delays. While average latency in Case D at QD=32 was ~2.3 ms, P99 tail latency reached ~3.2 ms. Interactive database systems must be sized based on P99 SLA limits, not averages.
